@@ -1,0 +1,49 @@
+---
+    - name: Reach all nodes
+      action: ping
+
+    - name: update
+      shell: apt-get update
+      sudo: yes
+
+    - name: Reach all nodes
+      command: rm -rf /opt/jetty
+      sudo: yes
+
+    - name: Remove old files if incase any
+      command: rm -rf /opt/jetty-distribution-9.0.6.v20130930
+      sudo: yes
+
+    - name: Download Jetty
+      get_url: url="http://repo2.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.0.6.v20130930/jetty-distribution-9.0.6.v20130930.zip" dest=/opt/ force=no
+      sudo: yes
+
+    - name: Unzip Jetty
+      command: unzip /opt/jetty-distribution-9.0.6.v20130930.zip chdir=/opt
+      sudo: yes
+    - name: Rename a folder name with jetty 
+      command: mv /opt/jetty-distribution-9.0.6.v20130930 /opt/jetty
+      sudo: yes
+    - lineinfile: dest=/opt/jetty/bin/jetty.sh
+                  regexp='Configuration files'
+                  insertafter='Configuration files'
+                  line="JETTY_HOME=/opt/jetty{{ '\n' }}JETTY_USER=root{{ '\n' }}JETTY_LOGS=/opt/jetty/logs/{{ '\n' }}"
+      sudo: yes
+
+    - name: unlink a file incase if any
+      command: unlink /etc/init.d/jetty
+      ignore_errors: true
+      sudo: yes
+
+    - name: create a link file
+      command: ln -s /opt/jetty/bin/jetty.sh /etc/init.d/jetty
+      ignore_errors: true
+      sudo: yes
+    
+    - name: Making bootable start
+      shell: sudo update-rc.d jetty defaults
+      ignore_errors: true
+      notify: start jetty service
+      sudo: yes
+
+

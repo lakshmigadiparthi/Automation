@@ -1,0 +1,11 @@
+---
+
+nexus_url: http://IP:8081/nexus/content/repositories
+artifact_version: 1.0-SNAPSHOT
+nexus_repository_name: snapshots
+group_id: com/name
+artifact_id: JavaService
+artifact_type: war
+backupDirectory_path: /home/deployment/artifactsbackup
+deployment_Destination: /opt/tomcat/webapps/JavaService.war
+temp_Location_WAR: /tmp/tempartifacts

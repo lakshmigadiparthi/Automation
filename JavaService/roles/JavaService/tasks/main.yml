@@ -1,0 +1,33 @@
+---
+
+- name: Create directory for temporary storage of artifacts
+  file: path=/tmp/tempartifacts state=directory
+
+- name: Download artifact file
+  get_url: url={{ nexus_url }}/{{ nexus_repository_name }}/{{ group_id }}/{{ artifact_id }}/{{ artifact_version }}/{{ artifact_id }}.{{ artifact_type }} dest={{ temp_Location_WAR }}
+
+- name: Create directory for backup artifacts
+  file: path=/tmp/artifactsbackup state=directory
+
+- name: Deploy latest war file
+  command: cp {{ temp_Location_WAR }}/{{ artifact_id }}.{{ artifact_type }} {{ deployment_Destination }}
+  become: yes
+  become_user: tomcat
+  notify: restart tomcat
+
+- name: Configuring Properties in group1
+  when: inventory_hostname in groups['group1']
+  template: src=WaitService.properties dest=/etc
+
+- name: Configuring Properties in group2
+  when: inventory_hostname in groups['group2']
+  template: src=WaitService.properties dest=/etc
+
+- name: Create Backup directory
+  file: path={{ backupDirectory_path }}/{{ lookup('pipe', 'date +%Y%m%d') }} state=directory
+
+- name: Delete remote war file
+  file: path={{ temp_Location_WAR }}/{{ artifact_id }}.{{ artifact_type }} state=absent
+
+- name: Take the backup of Current deployment file
+  command: cp {{ deployment_Destination }} {{ backupDirectory_path }}/{{ lookup('pipe', 'date +%Y%m%d') }}

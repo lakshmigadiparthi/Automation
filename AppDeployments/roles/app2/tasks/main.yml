@@ -1,0 +1,38 @@
+---
+
+- name: Create directory for temporary storage of artifacts
+  file: path=/tmp/tempartifacts state=directory
+
+- name: Download artifact file
+  get_url: url={{ nexus_url }}/{{ nexus_repository_name }}/{{ group_id }}/{{ artifact_id }}/{{ artifact_version }}/{{ artifact_id }}-{{ artifact_version }}.{{ artifact_type }} dest={{ temp_Location }}
+
+- name: Untar artifact file
+  command: tar xvzf {{ temp_Location }}/{{ artifact_id }}-{{ artifact_version }}.{{ artifact_type }} -C /usr/src/build
+
+- name: Changing Permissions
+  command: chown -R apache:apache /usr/src/build/{{ artifact_id }}-{{ artifact_version }}
+  become: yes
+  become_user: root
+
+- name: Changing Permissions
+  command: chmod -R 755 /usr/src/build/{{ artifact_id }}-{{ artifact_version }}
+  become: yes
+  become_user: root
+  
+- name: Install libselinux-python
+  yum: name=libselinux-python state=present
+  become: yes
+  become_user: root
+
+- name: Creating Softlink
+  file: src=/usr/src/build/{{ artifact_id }}-{{ artifact_version }}  dest=/usr/src/build/{{ artifact_id }} state=link
+
+#- lineinfile: dest=/usr/src/build/campaigns-{{ artifact_version }}/deploy.sh
+ #          state=present
+  #         regexp='^(.*)current_version(.*)$'
+   #        line='\1campaigns-{{ artifact_version }}\2'
+    #       backup=yes
+     #      backrefs=yes
+
+- name: Execute the script
+  command: sh /usr/src/build/{{ artifact_id }}/deploy.sh

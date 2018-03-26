@@ -1,0 +1,18 @@
+---
+    - name: Reach all nodes
+      action: ping
+    - name: Installing Java
+      shell: sudo apt-get update
+      sudo: yes
+    - name: Installing Java
+      shell: sudo apt-get install openjdk-7-jdk -y
+      sudo: yes
+    - name: Installing Java
+      shell: sudo apt-get install unzip -y
+      sudo: yes
+    - name: Installing Boto
+      shell: sudo apt-get install python-boto -y
+      sudo: yes
+    - name: install codedeploy agent
+      sudo: yes
+      action: aws_codedeploy enabled=true

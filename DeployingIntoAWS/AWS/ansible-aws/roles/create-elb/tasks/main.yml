@@ -1,0 +1,36 @@
+---
+# roles/load-balancer/tasks/main.yml
+
+- name: Configure Elastic Load Balancers
+  ec2_elb_lb:
+    region: "{{ region }}"
+    name: "{{ elb_name }}"
+    state: present
+    zones: "{{ zones }}"
+      #- us-west-2a
+      #- us-west-2b
+    listeners:
+      - protocol: http
+        load_balancer_port: 80
+        instance_port: 8080
+    health_check:
+      ping_protocol: http
+      ping_port: 80
+      ping_path: "/"
+      response_timeout: 10
+      interval: 30
+      unhealthy_threshold: 6
+      healthy_threshold: 2
+  register: elb_result
+- debug: var=elb_result
+- debug: var=elb_result.elb.dns_name
+- debug: var=elb_result.elb.name
+
+#- name: Instance Register
+ # local_action:
+  #  module: ec2_elb
+   # instance_id: "{{ instance_id }}"
+   # ec2_elbs: "{{ item }}"
+   # state: present
+  #with_items: "{{ elb_result.elb }}"
+

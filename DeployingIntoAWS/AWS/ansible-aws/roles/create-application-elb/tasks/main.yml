@@ -1,0 +1,30 @@
+---
+- name: Creating application Load Balancer
+  shell: aws elbv2 create-load-balancer --name {{ elb_name }} --subnets {{ subnets }} --security-groups {{ elb_security_group }}
+  register: elb
+#- debug: var=elb
+- debug: var=elb.stdout_lines[5][32:-3]
+
+- name: insert/update elb_arn to vars
+  lineinfile:
+    dest: ./vars/main.yml
+    regexp: '^elb_arn:'
+    line: 'elb_arn: {{ elb.stdout_lines[5][32:-3] }}'
+
+
+- name: create Target Group for loadbalancer
+  shell: aws elbv2 create-target-group --name {{ target_group_name }} --protocol HTTP --port 8080 --vpc-id {{ vpc_id }}
+  register: target
+- debug: var=target
+- debug: var=target.stdout_lines[11][31:-3]
+
+- name: insert/update instance_id to vars
+  lineinfile:
+    dest: ./vars/main.yml
+    regexp: '^target_group_arn:'
+    line: 'target_group_arn: {{ target.stdout_lines[11][31:-3] }}'
+
+- name: Create application ELB listner
+  shell: aws elbv2 create-listener --load-balancer-arn {{ elb.stdout_lines[5][32:-3] }}  --protocol HTTP --port 80 --default-actions Type=forward,TargetGroupArn={{ target.stdout_lines[11][31:-3] }}
+  register: listner
+- debug: var=listner

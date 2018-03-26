@@ -1,0 +1,38 @@
+---
+- hosts: all
+  tasks:
+    - debug: msg="Complete me"
+    - name: Enables epel repository
+      package: name=epel-release state=present
+    - name: Install lighttpd
+      package: name=lighttpd state=present
+    - name: Ensure lighttpd can be started at boot
+      service: name=lighttpd enabled=yes
+    - name: Install awscli
+      package: name=awscli state=present
+# Load AWS credentials
+    - name: Ensure .aws directory there
+      file: path='~/.aws' state=directory
+    - name: Ensure aws credentials there
+      template: src=aws/credentials dest='~/.aws/credentials' mode=0600
+# Deploy artifact
+    - name: Ensure bogusapp directory there
+      file: path=/srv/app state=directory mode=0755 owner=lighttpd group=lighttpd
+    - name: Configures app lighttpd named vhost via a jinja2 template
+      template: src=vhost.conf.j2 dest=/etc/lighttpd/vhosts.d/app.conf mode=0644 owner=root group=root
+    - name: Deploys artifact
+      unarchive: src={{ playbook_dir }}/work.tar.gz dest=/srv/app
+    - name: Loads app named vhost configuration to lighttpd
+      lineinfile:
+        path: /etc/lighttpd/lighttpd.conf
+        line: 'include "/etc/lighttpd/vhosts.d/app.conf"'
+      notify:
+        - Restart lighttpd
+    - name: Chnaging IPV6 Settings
+      lineinfile:
+        path: /etc/selinux/config
+        regexp: '^server-use-ipv6'
+        line: 'server.use-ipv6 = "disable"'
+  handlers:
+    - name: Restart lighttpd
+      service: name=lighttpd state=restarted

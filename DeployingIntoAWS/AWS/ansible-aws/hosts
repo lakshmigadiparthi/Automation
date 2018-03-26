@@ -1,0 +1,5 @@
+[TestNodes]
+localhost
+
+[LaunchedNode]
+52.32.253.98 ansible_ssh_user=ubuntu  instance_id=i-0e672042c12975be9 ansible_ssh_private_key_file=/home/ubuntu/demo.pem

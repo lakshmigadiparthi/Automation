@@ -1,0 +1,5 @@
+---
+
+
+rabbit_host: RabbitIP
+dbName: NameOfDBforgroup1

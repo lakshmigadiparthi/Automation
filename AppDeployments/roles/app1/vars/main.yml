@@ -1,0 +1,8 @@
+---
+
+nexus_url: http://IP/nexus/content/repositories
+nexus_repository_name: non-maven-releases
+group_id: com/group
+artifact_id: app1
+artifact_type: tgz
+temp_Location: /tmp/tempartifacts

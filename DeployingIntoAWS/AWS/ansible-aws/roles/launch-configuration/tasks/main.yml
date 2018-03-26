@@ -1,0 +1,16 @@
+---
+# roles/create-launch-configuration/tasks/main.yml
+- include_vars: /root/ansible/vars/main.yml
+- name: Create Launch Configuration
+  ec2_lc: 
+    name: "{{ launch_configuration_name }}"
+    image_id: "{{ customami_id }}"
+    key_name: "{{ key_pair }}"
+    region: "{{ region }}"
+    security_groups: "{{ lauch_config_Security_group }}"
+
+    instance_type: "{{ instance_size }}"
+    volumes: "{{ volumes }}"
+    instance_monitoring: yes
+    instance_profile_name: "{{ instance_arn }}"
+    #classic_link_vpc_id: "{{ vpc_id }}" 

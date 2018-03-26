@@ -1,0 +1,14 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: True
+  #sudo: yes
+  tasks:
+    - name: create launch
+        ec2_lc:
+          name: special
+          region: us-west-2
+          image_id: ami-5435b134
+          key_name: demo
+          security_groups: default
+          instance_type: t2.micro

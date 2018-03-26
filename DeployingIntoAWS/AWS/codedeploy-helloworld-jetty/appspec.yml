@@ -1,0 +1,22 @@
+version: 0.0
+os: linux
+files:
+   - source: /
+     destination: /opt/jetty/webapps
+permissions:
+   - object: /opt/jetty/webapps
+     pattern: "**"
+     owner: root
+     group: root
+     mode: 755
+     type:
+       - file
+hooks:
+   BeforeInstall:
+    - location: scripts/startjetty.sh
+      runas: root
+    - location: scripts/removeoldbuild.sh
+      runas: root
+   AfterInstall:
+    - location: scripts/restartjetty.sh
+      runas: root

@@ -1,0 +1,4 @@
+$HTTP["host"] =~ {% if domain is defined %} {{ domain }} {% else %} "app-work" {% endif %} {
+	server.document-root = "/srv/app/public/"
+	accesslog.filename   = "/var/log/lighttpd/app-access.log"
+}

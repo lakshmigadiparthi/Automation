@@ -1,0 +1,11 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: True
+  #sudo: yes
+  tasks:
+    - name: insert/update "Match User" configuration block in /etc/ssh/sshd_config
+      lineinfile:
+        dest: /root/ansible/vars/main.yml
+        regexp: '^instance_id:'
+        line: 'instance_id: test'

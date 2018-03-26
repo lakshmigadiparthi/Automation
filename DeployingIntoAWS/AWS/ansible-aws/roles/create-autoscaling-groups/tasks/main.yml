@@ -1,0 +1,17 @@
+---
+- include_vars: /root/ansible/vars/main.yml
+- name: Configure Auto Scaling Group and perform rolling deploy
+  ec2_asg:
+    region: "{{ region }}"
+    name: "{{ autoscaling_group_name }}"
+    launch_config_name: "{{ launch_configuration_name }}"
+    availability_zones: "{{ zones }}"
+    health_check_type: ELB
+    health_check_period: 300
+    desired_capacity: "{{ desired_capacity }}"
+    #replace_all_instances: yes
+    min_size: "{{ min_size }}"
+    max_size: "{{ max_size }}"
+    load_balancers: myfirstelb 
+    state: present
+  register: asg_result

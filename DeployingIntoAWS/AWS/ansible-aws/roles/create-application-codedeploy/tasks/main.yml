@@ -1,0 +1,10 @@
+---
+- name: create code deploy application
+  shell: aws deploy create-application --application-name {{ codedeploy_application_name }}
+  register: app
+- debug: var=app
+
+- name: create code deploy group
+  shell: aws deploy create-deployment-group --application-name {{ codedeploy_application_name }} --deployment-group-name {{ deployment_group }} --service-role-arn {{ serivce_role_arn }} --auto-scaling-groups {{ autoscaling_group_name }}
+  register: app_group
+- debug: var=app_group

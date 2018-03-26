@@ -1,0 +1,8 @@
+---
+
+rabbit_user: username
+rabbit_password: password
+wait_runDelayInMillis: 6000
+dbHost: RabbitIP
+dbUser: username
+dbPass: password

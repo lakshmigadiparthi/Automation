@@ -1,0 +1,16 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: True
+  #sudo: yes
+  tasks:
+    - name: Create AMI
+      ec2_ami:
+        region: "us-west-2"
+        instance_id: "i-0d5d2e504a32174da"
+        name: "webapp-2"
+        wait: yes
+        state: present
+      register: ami
+    - debug:
+        msg: "{{ ami.image_id }}"
