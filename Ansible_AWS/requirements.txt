@@ -9,7 +9,7 @@ paramiko==1.16.0
 pyasn1==0.1.9
 pycrypto==2.6.1
 python-dateutil==2.4.2
-PyYAML==3.11
+PyYAML==5.4
 rsa==3.3
 six==1.10.0
 tabulate==0.7.5
